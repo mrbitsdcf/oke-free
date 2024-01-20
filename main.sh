@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source bash-ini-parser.sh
+
 oci_auth_cmd="oci session authenticate --region us-ashburn-1 --profile-name DEFAULT"
 oci_session_validate_cmd="oci session validate --config-file ~/.oci/config --profile DEFAULT --auth security_token --local 2>&1 | awk '{print \$5,\$6}'"
 oci_session_refresh_cmd="oci session refresh --config-file ~/.oci/config --profile DEFAULT --auth security_token"
@@ -97,9 +99,24 @@ t_retry_apply(){
     done
 }
 
+get_config(){
+
+    cfg_parser ~/.oci/config
+    cfg_section_DEFAULT
+
+    export TF_VAR_ssh_public_key=$(cat id_rsa.pub)
+    export TF_VAR_ssh_private_key=$(cat id_rsa)
+    export TF_VAR_tenancy_ocid=$tenancy
+    export TF_VAR_user_ocid=$(oci iam user list --config-file ~/.oci/config --profile DEFAULT --auth security_token | jq '.[][].id')
+    export TF_VAR_fingerprint=$fingerprint
+    export TF_VAR_private_key_path=$key_file
+
+}
+
 # main program
 main (){
     ssh_handler
+    get_config
     t_init
     t_retry_apply
 }
