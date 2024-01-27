@@ -30,7 +30,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   cluster_id         = oci_containerengine_cluster.k8s_cluster.id
   compartment_id     = var.compartment_id
   kubernetes_version = var.k8s_version
-  name               = "k8s-node-pool"
+  name               = "mrbitsdcf-k8s-node-pool"
   node_config_details {
     placement_configs {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
@@ -60,7 +60,7 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
 
   initial_node_labels {
     key   = "name"
-    value = "k8s-cluster"
+    value = var.cluster_name
   }
 
   ssh_public_key = var.ssh_public_key

@@ -21,3 +21,5 @@ id_rsa*
 # Ignore output shell
 output-gen*
 tfplan
+tfplan.json
+.env
